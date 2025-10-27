@@ -17,6 +17,7 @@ const router = express.Router();
 
 const db = require('../models');
 const { handleValidationErrors } = require('../middleware/validation');
+const { authMiddleware } = require('../middleware/auth');
 
 // Validation rules for creating a service request
 const createRequestValidation = [
@@ -122,7 +123,7 @@ const listRequestsValidation = [
 ];
 
 // GET /api/requests - List all service requests with pagination and filters (Admin)
-router.get('/', listRequestsValidation, handleValidationErrors, async (req, res, next) => {
+router.get('/', authMiddleware, listRequestsValidation, handleValidationErrors, async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -188,6 +189,7 @@ router.get('/', listRequestsValidation, handleValidationErrors, async (req, res,
 
 // GET /api/requests/:id - Get a single service request by ID
 router.get('/:id', 
+  authMiddleware,
   param('id').isInt().withMessage('ID must be an integer'),
   handleValidationErrors,
   async (req, res, next) => {
@@ -260,7 +262,7 @@ const updateRequestValidation = [
 // If status to 'scheduled', require driver_id, vehicle_id, scheduled_time. 
 // Create assignment record. Validate enums and existence of driver/vehicle. 
 // Return 200 with updated request.
-router.put('/:id', updateRequestValidation, handleValidationErrors, async (req, res, next) => {
+router.put('/:id', authMiddleware, updateRequestValidation, handleValidationErrors, async (req, res, next) => {
   try {
     const { id } = req.params;
     const { status, driver_id, vehicle_id, scheduled_time, ...otherFields } = req.body;
@@ -361,6 +363,7 @@ router.put('/:id', updateRequestValidation, handleValidationErrors, async (req, 
 
 // DELETE /api/requests/:id - Delete a service request (Admin)
 router.delete('/:id',
+  authMiddleware,
   param('id').isInt().withMessage('ID must be an integer'),
   handleValidationErrors,
   async (req, res, next) => {

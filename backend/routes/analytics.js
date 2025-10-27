@@ -7,6 +7,7 @@ const { QueryTypes } = require('sequelize');
 const router = express.Router();
 
 const db = require('../models');
+const { authMiddleware } = require('../middleware/auth');
 
 // Helper function to get date range for last N days
 const getDateRange = (days) => {
@@ -22,8 +23,8 @@ const getDateRange = (days) => {
   return dates;
 };
 
-// GET /api/analytics/daily - Get daily counts for last 7 days
-router.get('/daily', async (req, res, next) => {
+// GET /api/analytics/daily - Get daily counts for last 7 days (Admin)
+router.get('/daily', authMiddleware, async (req, res, next) => {
   try {
     const days = parseInt(req.query.days) || 7; // Default to 7 days
     
@@ -75,8 +76,8 @@ router.get('/daily', async (req, res, next) => {
   }
 });
 
-// GET /api/analytics/status - Get counts by status
-router.get('/status', async (req, res, next) => {
+// GET /api/analytics/status - Get counts by status (Admin)
+router.get('/status', authMiddleware, async (req, res, next) => {
   try {
     const results = await db.ServiceRequest.findAll({
       attributes: [
@@ -109,8 +110,8 @@ router.get('/status', async (req, res, next) => {
   }
 });
 
-// GET /api/analytics/overview - Get general overview statistics
-router.get('/overview', async (req, res, next) => {
+// GET /api/analytics/overview - Get general overview statistics (Admin)
+router.get('/overview', authMiddleware, async (req, res, next) => {
   try {
     const [
       totalRequests,

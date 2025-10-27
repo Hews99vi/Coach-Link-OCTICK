@@ -4,9 +4,10 @@ const express = require('express');
 const router = express.Router();
 
 const db = require('../models');
+const { authMiddleware } = require('../middleware/auth');
 
-// GET /api/drivers - Get all drivers
-router.get('/', async (req, res, next) => {
+// GET /api/drivers - Get all drivers (Admin)
+router.get('/', authMiddleware, async (req, res, next) => {
   try {
     const drivers = await db.Driver.findAll({
       order: [['name', 'ASC']],
@@ -31,8 +32,8 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// GET /api/drivers/:id - Get a single driver by ID
-router.get('/:id', async (req, res, next) => {
+// GET /api/drivers/:id - Get a single driver by ID (Admin)
+router.get('/:id', authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
 

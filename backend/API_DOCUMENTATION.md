@@ -5,6 +5,20 @@
 http://localhost:5000/api
 ```
 
+## Authentication
+
+Most endpoints require JWT authentication. Include the token in the Authorization header:
+
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+### Getting a Token
+
+Use the `/api/auth/login` endpoint with coordinator credentials to obtain a JWT token.
+
+---
+
 ## Response Format
 
 All API responses follow this structure:
@@ -30,6 +44,76 @@ All API responses follow this structure:
       "value": "invalid_value"
     }
   ]
+}
+```
+
+---
+
+## Authentication Endpoints
+
+### Login
+**Public endpoint** - Get JWT token
+
+```http
+POST /api/auth/login
+```
+
+**Request Body:**
+```json
+{
+  "username": "coordinator",
+  "password": "your_password"
+}
+```
+
+**Response: 200 OK**
+```json
+{
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expiresIn": "1h",
+  "user": {
+    "username": "coordinator",
+    "role": "coordinator"
+  }
+}
+```
+
+**Error Response: 401 Unauthorized**
+```json
+{
+  "success": false,
+  "message": "Invalid credentials"
+}
+```
+
+---
+
+### Verify Token
+**Public endpoint** - Check if token is valid
+
+```http
+GET /api/auth/verify
+Authorization: Bearer <token>
+```
+
+**Response: 200 OK**
+```json
+{
+  "success": true,
+  "valid": true,
+  "user": {
+    "username": "coordinator",
+    "role": "coordinator"
+  }
+}
+```
+
+**Error Response: 401 Unauthorized**
+```json
+{
+  "success": false,
+  "message": "Invalid token"
 }
 ```
 
@@ -83,10 +167,11 @@ POST /api/requests
 ---
 
 ### List Service Requests
-**Admin endpoint** - Authentication required (future implementation)
+**Admin endpoint** - 🔒 Authentication required
 
 ```http
 GET /api/requests?page=1&limit=10&search=John&status=pending
+Authorization: Bearer <token>
 ```
 
 **Query Parameters:**
@@ -217,9 +302,11 @@ DELETE /api/requests/:id
 ## Drivers Endpoints
 
 ### List All Drivers
+**Admin endpoint** - 🔒 Authentication required
 
 ```http
 GET /api/drivers
+Authorization: Bearer <token>
 ```
 
 **Response: 200 OK**
@@ -270,9 +357,11 @@ GET /api/drivers/:id
 ## Vehicles Endpoints
 
 ### List All Vehicles
+**Admin endpoint** - 🔒 Authentication required
 
 ```http
 GET /api/vehicles
+Authorization: Bearer <token>
 ```
 
 **Response: 200 OK**
@@ -316,10 +405,14 @@ GET /api/vehicles/:id
 
 ## Analytics Endpoints
 
+All analytics endpoints require authentication.
+
 ### Daily Analytics
+**Admin endpoint** - 🔒 Authentication required
 
 ```http
 GET /api/analytics/daily?days=7
+Authorization: Bearer <token>
 ```
 
 **Query Parameters:**

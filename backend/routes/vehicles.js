@@ -4,9 +4,10 @@ const express = require('express');
 const router = express.Router();
 
 const db = require('../models');
+const { authMiddleware } = require('../middleware/auth');
 
-// GET /api/vehicles - Get all vehicles
-router.get('/', async (req, res, next) => {
+// GET /api/vehicles - Get all vehicles (Admin)
+router.get('/', authMiddleware, async (req, res, next) => {
   try {
     const vehicles = await db.Vehicle.findAll({
       order: [['plate', 'ASC']],
@@ -31,8 +32,8 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// GET /api/vehicles/:id - Get a single vehicle by ID
-router.get('/:id', async (req, res, next) => {
+// GET /api/vehicles/:id - Get a single vehicle by ID (Admin)
+router.get('/:id', authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
 

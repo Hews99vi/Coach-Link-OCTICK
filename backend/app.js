@@ -10,6 +10,7 @@ const morgan = require('morgan');
 const db = require('./models');
 
 // Import routes
+const authRoutes = require('./routes/auth');
 const requestRoutes = require('./routes/requests');
 const driverRoutes = require('./routes/drivers');
 const vehicleRoutes = require('./routes/vehicles');
@@ -45,6 +46,7 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/drivers', driverRoutes);
 app.use('/api/vehicles', vehicleRoutes);
