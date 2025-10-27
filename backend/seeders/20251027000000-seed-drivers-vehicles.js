@@ -1,6 +1,3 @@
-// Write a Sequelize seeder to insert 3 sample drivers 
-// (e.g., name: 'John Doe', phone: '123-456') and 3 vehicles 
-// (e.g., plate: 'ABC123', capacity: 50).
 
 'use strict';
 
