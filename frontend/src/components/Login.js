@@ -8,12 +8,13 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    username: 'coordinator',
+    username: '',
     password: '',
   });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -79,7 +80,7 @@ const Login = () => {
               <div className="text-center mb-4">
                 <i className="bi bi-shield-lock-fill text-primary" style={{ fontSize: '3rem' }}></i>
                 <h2 className="mt-3">Admin Login</h2>
-                <p className="text-muted">Coach-Link Coordinator Access</p>
+                <p className="text-muted">Coach-Link System Access</p>
               </div>
 
               {error && (
@@ -108,11 +109,12 @@ const Login = () => {
                     name="username"
                     value={formData.username}
                     onChange={handleChange}
-                    readOnly
-                    disabled
+                    placeholder="Enter your username"
+                    required
+                    autoFocus
                   />
                   <small className="form-text text-muted">
-                    Username is fixed as 'coordinator'
+                    coordinator / viewer / admin
                   </small>
                 </div>
 
@@ -121,17 +123,26 @@ const Login = () => {
                   <label htmlFor="password" className="form-label">
                     Password
                   </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Enter your password"
-                    required
-                    autoFocus
-                  />
+                  <div className="input-group">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      className="form-control"
+                      id="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="Enter your password"
+                      required
+                    />
+                    <button
+                      className="btn btn-outline-secondary"
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      title={showPassword ? "Hide password" : "Show password"}
+                    >
+                      <i className={`bi ${showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'}`}></i>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Submit Button */}

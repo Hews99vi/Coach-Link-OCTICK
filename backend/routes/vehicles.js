@@ -4,10 +4,11 @@ const express = require('express');
 const router = express.Router();
 
 const db = require('../models');
-const { authMiddleware } = require('../middleware/auth');
+const { authMiddleware, requireRole } = require('../middleware/auth');
 
-// GET /api/vehicles - Get all vehicles (Admin)
-router.get('/', authMiddleware, async (req, res, next) => {
+// GET /api/vehicles - Get all vehicles
+// Both coordinators and viewers can access (read-only)
+router.get('/', authMiddleware, requireRole('coordinator', 'viewer'), async (req, res, next) => {
   try {
     const vehicles = await db.Vehicle.findAll({
       order: [['plate', 'ASC']],
@@ -32,8 +33,9 @@ router.get('/', authMiddleware, async (req, res, next) => {
   }
 });
 
-// GET /api/vehicles/:id - Get a single vehicle by ID (Admin)
-router.get('/:id', authMiddleware, async (req, res, next) => {
+// GET /api/vehicles/:id - Get a single vehicle by ID
+// Both coordinators and viewers can access (read-only)
+router.get('/:id', authMiddleware, requireRole('coordinator', 'viewer'), async (req, res, next) => {
   try {
     const { id } = req.params;
 

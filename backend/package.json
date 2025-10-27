@@ -5,6 +5,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
+    "init:db": "node initDb.js",
+    "init:users": "node scripts/initDatabase.js",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "db:migrate": "sequelize-cli db:migrate",

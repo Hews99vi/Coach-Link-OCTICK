@@ -35,6 +35,12 @@ const AdminPanel = () => {
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
+  // Get user info from localStorage
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const userRole = user.role || 'viewer';
+  const isCoordinator = userRole === 'coordinator';
+  const isViewer = userRole === 'viewer';
+
   // State management
   const [requests, setRequests] = useState([]);
   const [drivers, setDrivers] = useState([]);
@@ -288,10 +294,24 @@ const AdminPanel = () => {
       <div className="row mb-4">
         <div className="col">
           <div className="d-flex justify-content-between align-items-center">
-            <h2>
-              <i className="bi bi-speedometer2 me-2"></i>
-              Admin Dashboard
-            </h2>
+            <div>
+              <h2>
+                <i className="bi bi-speedometer2 me-2"></i>
+                Admin Dashboard
+              </h2>
+              <div className="mt-2">
+                <span className={`badge ${isCoordinator ? 'bg-primary' : 'bg-info'} fs-6`}>
+                  <i className={`bi ${isCoordinator ? 'bi-person-check-fill' : 'bi-eye-fill'} me-1`}></i>
+                  {isCoordinator ? 'Coordinator' : 'Viewer'} - {user.username}
+                </span>
+                {isViewer && (
+                  <span className="ms-2 text-muted">
+                    <i className="bi bi-info-circle me-1"></i>
+                    Read-only access
+                  </span>
+                )}
+              </div>
+            </div>
             <button className="btn btn-outline-danger" onClick={handleLogout}>
               <i className="bi bi-box-arrow-right me-2"></i>
               Logout
@@ -430,42 +450,49 @@ const AdminPanel = () => {
                             </span>
                           </td>
                           <td>
-                            <div className="btn-group btn-group-sm">
-                              {request.status === 'pending' && (
-                                <>
+                            {isCoordinator ? (
+                              <div className="btn-group btn-group-sm">
+                                {request.status === 'pending' && (
+                                  <>
+                                    <button
+                                      className="btn btn-success"
+                                      onClick={() => handleStatusUpdate(request.id, 'approved')}
+                                      title="Approve"
+                                    >
+                                      <i className="bi bi-check-lg"></i>
+                                    </button>
+                                    <button
+                                      className="btn btn-danger"
+                                      onClick={() => handleStatusUpdate(request.id, 'rejected')}
+                                      title="Reject"
+                                    >
+                                      <i className="bi bi-x-lg"></i>
+                                    </button>
+                                  </>
+                                )}
+                                {(request.status === 'approved' || request.status === 'pending') && (
                                   <button
-                                    className="btn btn-success"
-                                    onClick={() => handleStatusUpdate(request.id, 'approved')}
-                                    title="Approve"
+                                    className="btn btn-primary"
+                                    onClick={() => openScheduleModal(request)}
+                                    title="Schedule"
                                   >
-                                    <i className="bi bi-check-lg"></i>
+                                    <i className="bi bi-calendar-check"></i>
                                   </button>
-                                  <button
-                                    className="btn btn-danger"
-                                    onClick={() => handleStatusUpdate(request.id, 'rejected')}
-                                    title="Reject"
-                                  >
-                                    <i className="bi bi-x-lg"></i>
-                                  </button>
-                                </>
-                              )}
-                              {(request.status === 'approved' || request.status === 'pending') && (
+                                )}
                                 <button
-                                  className="btn btn-primary"
-                                  onClick={() => openScheduleModal(request)}
-                                  title="Schedule"
+                                  className="btn btn-outline-danger"
+                                  onClick={() => handleDelete(request.id)}
+                                  title="Delete"
                                 >
-                                  <i className="bi bi-calendar-check"></i>
+                                  <i className="bi bi-trash"></i>
                                 </button>
-                              )}
-                              <button
-                                className="btn btn-outline-danger"
-                                onClick={() => handleDelete(request.id)}
-                                title="Delete"
-                              >
-                                <i className="bi bi-trash"></i>
-                              </button>
-                            </div>
+                              </div>
+                            ) : (
+                              <span className="badge bg-secondary">
+                                <i className="bi bi-eye-fill me-1"></i>
+                                View Only
+                              </span>
+                            )}
                           </td>
                         </tr>
                       ))

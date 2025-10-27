@@ -1,20 +1,16 @@
-// Implement POST /auth/login: Check username 'coordinator', compare password with bcrypt. 
-// On success, sign JWT with secret from env, expire 1h. Return {token}. 
-// On fail, 401 {message: 'Invalid credentials'}.
+// Role-based authentication: Support multiple users with coordinator/viewer roles
+// Coordinators have full access, viewers have read-only access
 
 const express = require('express');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
+const { User } = require('../models');
 
 const router = express.Router();
 
-// Hardcoded coordinator credentials
-const COORDINATOR_USERNAME = 'coordinator';
-
 /**
  * @route   POST /api/auth/login
- * @desc    Authenticate coordinator and get JWT token
+ * @desc    Authenticate user and get JWT token (supports coordinator and viewer roles)
  * @access  Public
  */
 router.post(
@@ -42,27 +38,21 @@ router.post(
 
       const { username, password } = req.body;
 
-      // Check if username matches coordinator
-      if (username !== COORDINATOR_USERNAME) {
+      // Find user by username
+      const user = await User.findOne({
+        where: { username, is_active: true },
+      });
+
+      // Check if user exists
+      if (!user) {
         return res.status(401).json({
           success: false,
           message: 'Invalid credentials',
         });
       }
 
-      // Get hashed password from environment variable
-      const hashedPassword = process.env.COORDINATOR_PASSWORD;
-
-      if (!hashedPassword) {
-        console.error('COORDINATOR_PASSWORD not set in environment variables');
-        return res.status(500).json({
-          success: false,
-          message: 'Server configuration error',
-        });
-      }
-
-      // Compare password with hashed password
-      const isPasswordValid = await bcrypt.compare(password, hashedPassword);
+      // Validate password
+      const isPasswordValid = await user.validatePassword(password);
 
       if (!isPasswordValid) {
         return res.status(401).json({
@@ -70,6 +60,9 @@ router.post(
           message: 'Invalid credentials',
         });
       }
+
+      // Update last login timestamp
+      await user.update({ last_login: new Date() });
 
       // Get JWT secret from environment
       const jwtSecret = process.env.JWT_SECRET;
@@ -84,8 +77,9 @@ router.post(
 
       // Create JWT payload
       const payload = {
-        username: COORDINATOR_USERNAME,
-        role: 'coordinator',
+        id: user.id,
+        username: user.username,
+        role: user.role,
         iat: Date.now(),
       };
 
@@ -94,14 +88,17 @@ router.post(
         expiresIn: process.env.JWT_EXPIRES_IN || '1h',
       });
 
-      // Return token
+      // Return token and user info
       res.json({
         success: true,
         token,
         expiresIn: process.env.JWT_EXPIRES_IN || '1h',
         user: {
-          username: COORDINATOR_USERNAME,
-          role: 'coordinator',
+          id: user.id,
+          username: user.username,
+          role: user.role,
+          full_name: user.full_name,
+          email: user.email,
         },
       });
 

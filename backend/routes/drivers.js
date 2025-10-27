@@ -4,10 +4,11 @@ const express = require('express');
 const router = express.Router();
 
 const db = require('../models');
-const { authMiddleware } = require('../middleware/auth');
+const { authMiddleware, requireRole } = require('../middleware/auth');
 
-// GET /api/drivers - Get all drivers (Admin)
-router.get('/', authMiddleware, async (req, res, next) => {
+// GET /api/drivers - Get all drivers
+// Both coordinators and viewers can access (read-only)
+router.get('/', authMiddleware, requireRole('coordinator', 'viewer'), async (req, res, next) => {
   try {
     const drivers = await db.Driver.findAll({
       order: [['name', 'ASC']],
@@ -32,8 +33,9 @@ router.get('/', authMiddleware, async (req, res, next) => {
   }
 });
 
-// GET /api/drivers/:id - Get a single driver by ID (Admin)
-router.get('/:id', authMiddleware, async (req, res, next) => {
+// GET /api/drivers/:id - Get a single driver by ID
+// Both coordinators and viewers can access (read-only)
+router.get('/:id', authMiddleware, requireRole('coordinator', 'viewer'), async (req, res, next) => {
   try {
     const { id } = req.params;
 

@@ -85,7 +85,40 @@ const requireCoordinator = (req, res, next) => {
   next();
 };
 
+/**
+ * Middleware to check if user has any of the allowed roles
+ * Use after authMiddleware
+ * @param {Array<string>} roles - Array of allowed roles
+ */
+const requireRole = (...roles) => {
+  return (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: `Forbidden - Requires one of these roles: ${roles.join(', ')}`,
+      });
+    }
+    next();
+  };
+};
+
+/**
+ * Middleware to check if user is viewer
+ * Use after authMiddleware
+ */
+const requireViewer = (req, res, next) => {
+  if (!req.user || req.user.role !== 'viewer') {
+    return res.status(403).json({
+      success: false,
+      message: 'Forbidden - Viewer access required',
+    });
+  }
+  next();
+};
+
 module.exports = {
   authMiddleware,
   requireCoordinator,
+  requireRole,
+  requireViewer,
 };
