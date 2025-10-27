@@ -356,6 +356,20 @@
   transform: translateY(0);
 }
 
+.action-btn:focus {
+  outline: 3px solid #0d6efd;
+  outline-offset: 2px;
+}
+
+.action-btn:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.action-btn:focus-visible {
+  outline: 3px solid #0d6efd;
+  outline-offset: 2px;
+}
+
 .action-btn-approve {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;

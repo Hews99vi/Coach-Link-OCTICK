@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './LandingPage.css';
+import SkipLink from './SkipLink';
 
 const LandingPage = () => {
   return (
-    <div className="landing-page">
+    <>
+      <SkipLink />
+      <div className="landing-page" id="main-content">
       {/* Hero Section */}
       <section className="hero-section">
         <nav className="navbar navbar-expand-lg navbar-dark">
@@ -407,6 +410,7 @@ const LandingPage = () => {
         </div>
       </footer>
     </div>
+    </>
   );
 };
 

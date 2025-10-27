@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './RequestForm.css';
+import SkipLink from './SkipLink';
 
 const RequestForm = () => {
   const [formData, setFormData] = useState({
@@ -119,12 +120,14 @@ const RequestForm = () => {
   };
 
   return (
-    <div className="container py-5 request-form-container">
+    <>
+      <SkipLink />
+      <div className="container py-5 request-form-container" id="main-content">
       <div className="row justify-content-center">
         <div className="col-md-10 col-lg-8">
           {/* Header Section */}
           <div className="text-center mb-4">
-            <div className="icon-circle">
+            <div className="icon-circle" aria-hidden="true">
               <i className="bi bi-bus-front fs-1 text-primary"></i>
             </div>
             <h1 className="display-5 fw-bold mb-2">Request a Trip</h1>
@@ -187,7 +190,7 @@ const RequestForm = () => {
                         Full Name <span className="text-danger">*</span>
                       </label>
                       <div className="input-group">
-                        <span className="input-group-text bg-light border-end-0">
+                        <span className="input-group-text bg-light border-end-0" aria-hidden="true">
                           <i className="bi bi-person"></i>
                         </span>
                         <input
@@ -209,7 +212,7 @@ const RequestForm = () => {
                         Phone Number <span className="text-danger">*</span>
                       </label>
                       <div className="input-group">
-                        <span className="input-group-text bg-light border-end-0">
+                        <span className="input-group-text bg-light border-end-0" aria-hidden="true">
                           <i className="bi bi-telephone"></i>
                         </span>
                         <input
@@ -397,6 +400,7 @@ const RequestForm = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

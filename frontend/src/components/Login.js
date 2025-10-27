@@ -5,6 +5,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import SkipLink from './SkipLink';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -72,13 +73,15 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
+    <>
+      <SkipLink />
+      <div className="container" id="main-content">
       <div className="row justify-content-center align-items-center min-vh-100">
         <div className="col-md-5 col-lg-4">
           <div className="card shadow-lg">
             <div className="card-body p-5">
               <div className="text-center mb-4">
-                <i className="bi bi-shield-lock-fill text-primary" style={{ fontSize: '3rem' }}></i>
+                <i className="bi bi-shield-lock-fill text-primary" style={{ fontSize: '3rem' }} aria-hidden="true"></i>
                 <h2 className="mt-3">Admin Login</h2>
                 <p className="text-muted">Coach-Link System Access</p>
               </div>
@@ -138,9 +141,10 @@ const Login = () => {
                       className="btn btn-outline-secondary"
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                       title={showPassword ? "Hide password" : "Show password"}
                     >
-                      <i className={`bi ${showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'}`}></i>
+                      <i className={`bi ${showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'}`} aria-hidden="true"></i>
                     </button>
                   </div>
                 </div>
@@ -181,6 +185,7 @@ const Login = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
 import useSSE from '../hooks/useSSE';
 import './AdminPanel.css';
+import SkipLink from './SkipLink';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -347,8 +348,10 @@ const AdminPanel = () => {
   };
 
   return (
-    <div className="admin-dashboard">
-      <div className="container-fluid py-4">
+    <>
+      <SkipLink />
+      <div className="admin-dashboard">
+      <div className="container-fluid py-4" id="main-content">
         {/* Real-time notification */}
         {notification && (
           <div className="position-fixed top-0 end-0 p-3 notification-toast" style={{ zIndex: 9999 }}>
@@ -503,8 +506,8 @@ const AdminPanel = () => {
 
         {/* Loading Spinner */}
         {loading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
+          <div className="loading-container" role="status" aria-live="polite" aria-label="Loading requests">
+            <div className="loading-spinner" aria-hidden="true"></div>
             <p className="mt-3 text-muted">Loading requests...</p>
           </div>
         ) : (
@@ -516,15 +519,15 @@ const AdminPanel = () => {
                   <table className="table admin-table">
                     <thead>
                       <tr>
-                        <th>ID</th>
-                        <th>Customer</th>
-                        <th>Phone</th>
-                        <th>Pickup</th>
-                        <th>Dropoff</th>
-                        <th>Pickup Time</th>
-                        <th>Passengers</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Pickup</th>
+                        <th scope="col">Dropoff</th>
+                        <th scope="col">Pickup Time</th>
+                        <th scope="col">Passengers</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -546,23 +549,23 @@ const AdminPanel = () => {
                             <td><strong>#{request.id}</strong></td>
                             <td>{request.customer_name}</td>
                             <td>
-                              <i className="bi bi-telephone me-1"></i>
+                              <i className="bi bi-telephone me-1" aria-hidden="true"></i>
                               {request.phone}
                             </td>
                             <td>
-                              <i className="bi bi-geo-alt me-1"></i>
+                              <i className="bi bi-geo-alt me-1" aria-hidden="true"></i>
                               {request.pickup_location || '-'}
                             </td>
                             <td>
-                              <i className="bi bi-geo-alt-fill me-1"></i>
+                              <i className="bi bi-geo-alt-fill me-1" aria-hidden="true"></i>
                               {request.dropoff_location || '-'}
                             </td>
                             <td>
-                              <i className="bi bi-clock me-1"></i>
+                              <i className="bi bi-clock me-1" aria-hidden="true"></i>
                               {new Date(request.pickup_time).toLocaleString()}
                             </td>
                             <td>
-                              <i className="bi bi-people me-1"></i>
+                              <i className="bi bi-people me-1" aria-hidden="true"></i>
                               {request.passengers || '-'}
                             </td>
                             <td>
@@ -669,18 +672,26 @@ const AdminPanel = () => {
 
         {/* Schedule Modal */}
         {showModal && (
-          <div className="modal show d-block schedule-modal" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
+          <div 
+            className="modal show d-block schedule-modal" 
+            tabIndex="-1" 
+            role="dialog"
+            aria-labelledby="scheduleModalTitle"
+            aria-modal="true"
+            style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}
+          >
             <div className="modal-dialog modal-dialog-centered">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">
-                    <i className="bi bi-calendar-check me-2"></i>
+                  <h5 className="modal-title" id="scheduleModalTitle">
+                    <i className="bi bi-calendar-check me-2" aria-hidden="true"></i>
                     Schedule Request
                   </h5>
                   <button
                     type="button"
                     className="btn-close"
                     onClick={() => setShowModal(false)}
+                    aria-label="Close modal"
                   ></button>
                 </div>
                 <div className="modal-body">
@@ -764,6 +775,7 @@ const AdminPanel = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 
