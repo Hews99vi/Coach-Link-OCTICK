@@ -1,0 +1,219 @@
+/* Professional styling for Request Form */
+
+/* Form container animations */
+.request-form-container {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Card styling */
+.request-form-card {
+  border-radius: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.request-form-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+/* Input group styling */
+.input-group-text {
+  background-color: #f8f9fa;
+  border-right: 0;
+  color: #6c757d;
+  transition: all 0.3s ease;
+}
+
+.input-group:focus-within .input-group-text {
+  background-color: #e7f1ff;
+  color: #0d6efd;
+  border-color: #86b7fe;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Section headers */
+.section-header {
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.section-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #0d6efd, transparent);
+  border-radius: 2px;
+}
+
+/* Form labels */
+.form-label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+/* Input fields */
+.form-control {
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Textarea */
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Submit button */
+.btn-submit {
+  background: linear-gradient(135deg, #0d6efd 0%, #0052cc 100%);
+  border: none;
+  border-radius: 0.75rem;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
+  background: linear-gradient(135deg, #0052cc 0%, #003d99 100%);
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(13, 110, 253, 0.3);
+}
+
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Alert styling */
+.alert {
+  border-radius: 0.75rem;
+  border-left: 4px solid;
+  animation: slideInDown 0.4s ease-out;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-success {
+  border-left-color: #198754;
+  background-color: #d1e7dd;
+}
+
+.alert-danger {
+  border-left-color: #dc3545;
+  background-color: #f8d7da;
+}
+
+/* Icon circle */
+.icon-circle {
+  width: 80px;
+  height: 80px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(13, 110, 253, 0.1) 0%, rgba(13, 110, 253, 0.05) 100%);
+  margin-bottom: 1rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Divider */
+hr {
+  opacity: 0.1;
+  margin: 2rem 0;
+}
+
+/* Security badge */
+.security-badge {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-control {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  .btn-submit {
+    font-size: 1rem;
+    padding: 0.875rem 1.5rem;
+  }
+  
+  .display-5 {
+    font-size: 2rem;
+  }
+}
+
+/* Loading state */
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Form text helper */
+.form-text {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-top: 0.5rem;
+}
+
+/* Input group focus state */
+.input-group input:focus ~ .input-group-text,
+.input-group select:focus ~ .input-group-text {
+  border-color: #86b7fe;
+}
