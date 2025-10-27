@@ -15,6 +15,7 @@ const requestRoutes = require('./routes/requests');
 const driverRoutes = require('./routes/drivers');
 const vehicleRoutes = require('./routes/vehicles');
 const analyticsRoutes = require('./routes/analytics');
+const { router: eventsRoutes } = require('./routes/events');
 
 // Create Express app
 const app = express();
@@ -51,6 +52,7 @@ app.use('/api/requests', requestRoutes);
 app.use('/api/drivers', driverRoutes);
 app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/events', eventsRoutes);
 
 // 404 handler
 app.use((req, res) => {

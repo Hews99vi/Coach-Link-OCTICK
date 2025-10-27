@@ -6,22 +6,30 @@ const jwt = require('jsonwebtoken');
 /**
  * Authentication middleware to verify JWT tokens
  * Protects routes that require coordinator authentication
+ * Supports token from Authorization header or query parameter (for SSE)
  */
 const authMiddleware = (req, res, next) => {
   try {
-    // Get token from Authorization header
+    let token = null;
+    
+    // Try to get token from Authorization header first
     const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.substring(7);
+    }
+    
+    // If no header token, try query parameter (for SSE connections)
+    if (!token && req.query.token) {
+      token = req.query.token;
+    }
 
-    // Check if Authorization header exists and has Bearer format
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    // Check if token exists
+    if (!token) {
       return res.status(401).json({
         success: false,
         message: 'Unauthorized - No token provided',
       });
     }
-
-    // Extract token (remove 'Bearer ' prefix)
-    const token = authHeader.substring(7);
 
     // Get JWT secret from environment
     const jwtSecret = process.env.JWT_SECRET;
@@ -39,6 +47,7 @@ const authMiddleware = (req, res, next) => {
 
     // Attach user information to request object
     req.user = {
+      id: decoded.id,
       username: decoded.username,
       role: decoded.role,
     };

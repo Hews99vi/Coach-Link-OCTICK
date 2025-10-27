@@ -7,10 +7,11 @@
 // In AdminPanel, fetch GET /analytics/daily, render Chart.js bar chart with dates on x, counts on y. 
 // Keep it small/sparkline style.
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
+import useSSE from '../hooks/useSSE';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -49,6 +50,7 @@ const AdminPanel = () => {
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [notification, setNotification] = useState(null);
   
   // Filters and pagination
   const [searchTerm, setSearchTerm] = useState('');
@@ -155,6 +157,61 @@ const AdminPanel = () => {
       console.error('Error fetching analytics:', error);
     }
   };
+
+  // Handle SSE messages for real-time updates
+  const handleSSEMessage = useCallback((data) => {
+    if (data.type === 'requestUpdate' || data.type === 'statusChange') {
+      console.log('📡 Real-time update received:', data);
+      
+      // Update the requests list with the new data
+      if (data.request) {
+        setRequests(prevRequests => {
+          const index = prevRequests.findIndex(r => r.id === data.request.id);
+          if (index !== -1) {
+            const updated = [...prevRequests];
+            updated[index] = data.request;
+            return updated;
+          }
+          return prevRequests;
+        });
+      }
+      
+      // Show notification
+      if (data.type === 'statusChange') {
+        const statusColors = {
+          pending: 'warning',
+          approved: 'info',
+          scheduled: 'success',
+          rejected: 'danger'
+        };
+        
+        setNotification({
+          message: `Request #${data.requestId} status changed: ${data.oldStatus} → ${data.newStatus}`,
+          type: statusColors[data.newStatus] || 'info',
+          timestamp: Date.now()
+        });
+        
+        // Auto-hide notification after 5 seconds
+        setTimeout(() => {
+          setNotification(null);
+        }, 5000);
+        
+        // Refresh analytics
+        fetchAnalytics();
+      }
+    }
+  }, []);
+
+  // Setup SSE connection
+  const { isConnected: sseConnected } = useSSE(
+    `${API_URL}/events/requests`,
+    handleSSEMessage,
+    {
+      autoReconnect: true,
+      reconnectInterval: 3000,
+      maxReconnectAttempts: 5
+    }
+  );
 
   // Initial load
   useEffect(() => {
@@ -290,6 +347,22 @@ const AdminPanel = () => {
 
   return (
     <div className="container-fluid py-4">
+      {/* Real-time notification */}
+      {notification && (
+        <div className="position-fixed top-0 end-0 p-3" style={{ zIndex: 9999 }}>
+          <div className={`alert alert-${notification.type} alert-dismissible fade show shadow-lg`} role="alert">
+            <i className="bi bi-broadcast me-2"></i>
+            <strong>Live Update:</strong> {notification.message}
+            <button 
+              type="button" 
+              className="btn-close" 
+              onClick={() => setNotification(null)}
+              aria-label="Close"
+            ></button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="row mb-4">
         <div className="col">
@@ -310,6 +383,10 @@ const AdminPanel = () => {
                     Read-only access
                   </span>
                 )}
+                <span className={`ms-2 badge ${sseConnected ? 'bg-success' : 'bg-secondary'}`}>
+                  <i className={`bi ${sseConnected ? 'bi-wifi' : 'bi-wifi-off'} me-1`}></i>
+                  {sseConnected ? 'Live' : 'Offline'}
+                </span>
               </div>
             </div>
             <button className="btn btn-outline-danger" onClick={handleLogout}>

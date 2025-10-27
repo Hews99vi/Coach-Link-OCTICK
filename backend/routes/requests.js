@@ -18,6 +18,7 @@ const router = express.Router();
 const db = require('../models');
 const { handleValidationErrors } = require('../middleware/validation');
 const { authMiddleware, requireCoordinator, requireRole } = require('../middleware/auth');
+const { notifyRequestUpdate, notifyStatusChange } = require('./events');
 
 // Validation rules for creating a service request
 const createRequestValidation = [
@@ -276,6 +277,9 @@ router.put('/:id', authMiddleware, requireCoordinator, updateRequestValidation, 
       });
     }
 
+    // Store old status for notification
+    const oldStatus = serviceRequest.status;
+
     // If scheduling, validate driver and vehicle exist
     if (status === 'scheduled') {
       const driver = await db.Driver.findByPk(driver_id);
@@ -349,6 +353,16 @@ router.put('/:id', authMiddleware, requireCoordinator, updateRequestValidation, 
         },
       ],
     });
+
+    // Broadcast real-time update to all connected clients
+    notifyRequestUpdate(updatedRequest, 'updated');
+    
+    // If status changed, send specific status change notification
+    if (status && status !== oldStatus) {
+      notifyStatusChange(id, oldStatus, status, {
+        request: updatedRequest,
+      });
+    }
 
     res.json({
       success: true,
