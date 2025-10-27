@@ -1,25 +1,40 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Coach-Link",
+  "name": "Coach-Link - Professional Transportation Management",
+  "description": "Professional transportation request management platform with real-time updates",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "favicon/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "favicon/favicon-96x96.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "96x96"
     },
     {
-      "src": "logo512.png",
+      "src": "favicon/web-app-manifest-192x192.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "192x192",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "favicon/web-app-manifest-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "favicon/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#7c3aed",
+  "background_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "categories": ["business", "transportation", "productivity"]
 }
