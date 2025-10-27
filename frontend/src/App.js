@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LandingPage from './components/LandingPage';
 import RequestForm from './components/RequestForm';
 import Login from './components/Login';
 import AdminPanel from './components/AdminPanel';
@@ -11,7 +12,8 @@ function App() {
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<RequestForm />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/request" element={<RequestForm />} />
         <Route path="/login" element={<Login />} />
         
         {/* Protected Admin Routes */}
