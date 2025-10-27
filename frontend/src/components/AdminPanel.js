@@ -12,6 +12,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
 import useSSE from '../hooks/useSSE';
+import './AdminPanel.css';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -346,361 +347,422 @@ const AdminPanel = () => {
   };
 
   return (
-    <div className="container-fluid py-4">
-      {/* Real-time notification */}
-      {notification && (
-        <div className="position-fixed top-0 end-0 p-3" style={{ zIndex: 9999 }}>
-          <div className={`alert alert-${notification.type} alert-dismissible fade show shadow-lg`} role="alert">
-            <i className="bi bi-broadcast me-2"></i>
-            <strong>Live Update:</strong> {notification.message}
-            <button 
-              type="button" 
-              className="btn-close" 
-              onClick={() => setNotification(null)}
-              aria-label="Close"
-            ></button>
+    <div className="admin-dashboard">
+      <div className="container-fluid py-4">
+        {/* Real-time notification */}
+        {notification && (
+          <div className="position-fixed top-0 end-0 p-3 notification-toast" style={{ zIndex: 9999 }}>
+            <div className={`alert alert-${notification.type} alert-dismissible fade show shadow-lg`} role="alert">
+              <i className="bi bi-broadcast me-2"></i>
+              <strong>Live Update:</strong> {notification.message}
+              <button 
+                type="button" 
+                className="btn-close" 
+                onClick={() => setNotification(null)}
+                aria-label="Close"
+              ></button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Header */}
-      <div className="row mb-4">
-        <div className="col">
-          <div className="d-flex justify-content-between align-items-center">
-            <div>
-              <h2>
-                <i className="bi bi-speedometer2 me-2"></i>
-                Admin Dashboard
-              </h2>
-              <div className="mt-2">
-                <span className={`badge ${isCoordinator ? 'bg-primary' : 'bg-info'} fs-6`}>
-                  <i className={`bi ${isCoordinator ? 'bi-person-check-fill' : 'bi-eye-fill'} me-1`}></i>
-                  {isCoordinator ? 'Coordinator' : 'Viewer'} - {user.username}
-                </span>
-                {isViewer && (
-                  <span className="ms-2 text-muted">
-                    <i className="bi bi-info-circle me-1"></i>
-                    Read-only access
-                  </span>
-                )}
-                <span className={`ms-2 badge ${sseConnected ? 'bg-success' : 'bg-secondary'}`}>
-                  <i className={`bi ${sseConnected ? 'bi-wifi' : 'bi-wifi-off'} me-1`}></i>
-                  {sseConnected ? 'Live' : 'Offline'}
-                </span>
+        {/* Header */}
+        <div className="row mb-4">
+          <div className="col">
+            <div className="dashboard-header">
+              <div className="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                <div>
+                  <h1 className="dashboard-title">
+                    <i className="bi bi-speedometer2 me-3"></i>
+                    Admin Dashboard
+                  </h1>
+                  <div className="user-badge-group">
+                    <span className={`user-badge ${isCoordinator ? 'bg-primary' : 'bg-info'}`}>
+                      <i className={`bi ${isCoordinator ? 'bi-person-check-fill' : 'bi-eye-fill'} me-2`}></i>
+                      {isCoordinator ? 'Coordinator' : 'Viewer'} • {user.username}
+                    </span>
+                    {isViewer && (
+                      <span className="user-badge bg-secondary">
+                        <i className="bi bi-lock-fill me-2"></i>
+                        Read-only access
+                      </span>
+                    )}
+                    <span className={`user-badge connection-badge ${sseConnected ? 'bg-success live' : 'bg-secondary'}`}>
+                      <i className={`bi ${sseConnected ? 'bi-wifi' : 'bi-wifi-off'} me-2`}></i>
+                      {sseConnected ? 'Live' : 'Offline'}
+                    </span>
+                  </div>
+                </div>
+                <button className="btn logout-btn" onClick={handleLogout}>
+                  <i className="bi bi-box-arrow-right me-2"></i>
+                  Logout
+                </button>
               </div>
             </div>
-            <button className="btn btn-outline-danger" onClick={handleLogout}>
-              <i className="bi bi-box-arrow-right me-2"></i>
-              Logout
-            </button>
           </div>
         </div>
-      </div>
 
-      {/* Analytics Chart */}
-      {analytics && (
-        <div className="row mb-4">
-          <div className="col-md-8">
-            <div className="card">
-              <div className="card-body">
-                <div style={{ height: '200px' }}>
-                  <Bar data={chartData} options={chartOptions} />
+        {/* Analytics Chart */}
+        {analytics && (
+          <div className="row mb-4">
+            {/* Stats Cards */}
+            <div className="col-md-4 mb-3">
+              <div className="card stats-card">
+                <div className="stats-icon text-primary">
+                  <i className="bi bi-journal-text"></i>
+                </div>
+                <h3 className="stats-value">{analytics.summary.totalRequests}</h3>
+                <p className="stats-label">Total Requests</p>
+              </div>
+            </div>
+            <div className="col-md-4 mb-3">
+              <div className="card stats-card">
+                <div className="stats-icon text-success">
+                  <i className="bi bi-graph-up-arrow"></i>
+                </div>
+                <h3 className="stats-value">{analytics.summary.averagePerDay}</h3>
+                <p className="stats-label">Average per Day</p>
+              </div>
+            </div>
+            <div className="col-md-4 mb-3">
+              <div className="card stats-card">
+                <div className="stats-icon text-info">
+                  <i className="bi bi-calendar-range"></i>
+                </div>
+                <h3 className="stats-value">{analytics.summary.period}</h3>
+                <p className="stats-label">Tracking Period</p>
+              </div>
+            </div>
+
+            {/* Chart */}
+            <div className="col-12">
+              <div className="card chart-card">
+                <div className="card-body">
+                  <h5 className="card-title">
+                    <i className="bi bi-bar-chart-line me-2"></i>
+                    Last 7 Days Activity
+                  </h5>
+                  <div style={{ height: '300px' }}>
+                    <Bar data={chartData} options={chartOptions} />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="col-md-4">
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">Summary</h5>
-                <p className="mb-2">
-                  <strong>Total Requests:</strong> {analytics.summary.totalRequests}
-                </p>
-                <p className="mb-2">
-                  <strong>Average/Day:</strong> {analytics.summary.averagePerDay}
-                </p>
-                <p className="mb-0">
-                  <strong>Period:</strong> {analytics.summary.period}
-                </p>
+        )}
+
+        {/* Filters */}
+        <div className="filter-section">
+          <div className="row align-items-center">
+            <div className="col-md-4 mb-3 mb-md-0">
+              <div className="filter-input-group">
+                <i className="bi bi-search filter-icon"></i>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Search by name or phone..."
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-3 mb-3 mb-md-0">
+              <div className="filter-input-group">
+                <i className="bi bi-funnel filter-icon"></i>
+                <select
+                  className="form-select"
+                  value={statusFilter}
+                  onChange={(e) => {
+                    setStatusFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                >
+                  <option value="">All Statuses</option>
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                  <option value="scheduled">Scheduled</option>
+                </select>
+              </div>
+            </div>
+            <div className="col-md-5 text-md-end">
+              <div className="results-counter">
+                <i className="bi bi-list-check me-2"></i>
+                Showing <strong>{requests.length}</strong> of <strong>{totalCount}</strong> requests
               </div>
             </div>
           </div>
         </div>
-      )}
 
-      {/* Filters */}
-      <div className="row mb-3">
-        <div className="col-md-4">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search by name or phone..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-          />
-        </div>
-        <div className="col-md-3">
-          <select
-            className="form-select"
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value);
-              setCurrentPage(1);
-            }}
-          >
-            <option value="">All Statuses</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-            <option value="scheduled">Scheduled</option>
-          </select>
-        </div>
-        <div className="col-md-5 text-end">
-          <span className="text-muted">
-            Showing {requests.length} of {totalCount} requests
-          </span>
-        </div>
-      </div>
+        {/* Error Message */}
+        {error && (
+          <div className="alert alert-danger border-0 shadow-sm">{error}</div>
+        )}
 
-      {/* Error Message */}
-      {error && (
-        <div className="alert alert-danger">{error}</div>
-      )}
-
-      {/* Loading Spinner */}
-      {loading ? (
-        <div className="text-center py-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
+        {/* Loading Spinner */}
+        {loading ? (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p className="mt-3 text-muted">Loading requests...</p>
           </div>
-        </div>
-      ) : (
-        <>
-          {/* Requests Table */}
-          <div className="card">
-            <div className="card-body">
-              <div className="table-responsive">
-                <table className="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Customer</th>
-                      <th>Phone</th>
-                      <th>Pickup</th>
-                      <th>Dropoff</th>
-                      <th>Pickup Time</th>
-                      <th>Passengers</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {requests.length === 0 ? (
+        ) : (
+          <>
+            {/* Requests Table */}
+            <div className="card table-card">
+              <div className="card-body">
+                <div className="table-responsive">
+                  <table className="table admin-table">
+                    <thead>
                       <tr>
-                        <td colSpan="9" className="text-center text-muted">
-                          No requests found
-                        </td>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Pickup</th>
+                        <th>Dropoff</th>
+                        <th>Pickup Time</th>
+                        <th>Passengers</th>
+                        <th>Status</th>
+                        <th>Actions</th>
                       </tr>
-                    ) : (
-                      requests.map((request) => (
-                        <tr key={request.id}>
-                          <td>{request.id}</td>
-                          <td>{request.customer_name}</td>
-                          <td>{request.phone}</td>
-                          <td>{request.pickup_location || '-'}</td>
-                          <td>{request.dropoff_location || '-'}</td>
-                          <td>
-                            {new Date(request.pickup_time).toLocaleString()}
-                          </td>
-                          <td>{request.passengers || '-'}</td>
-                          <td>
-                            <span className={`badge bg-${
-                              request.status === 'pending' ? 'warning' :
-                              request.status === 'approved' ? 'info' :
-                              request.status === 'scheduled' ? 'success' :
-                              'danger'
-                            }`}>
-                              {request.status}
-                            </span>
-                          </td>
-                          <td>
-                            {isCoordinator ? (
-                              <div className="btn-group btn-group-sm">
-                                {request.status === 'pending' && (
-                                  <>
-                                    <button
-                                      className="btn btn-success"
-                                      onClick={() => handleStatusUpdate(request.id, 'approved')}
-                                      title="Approve"
-                                    >
-                                      <i className="bi bi-check-lg"></i>
-                                    </button>
-                                    <button
-                                      className="btn btn-danger"
-                                      onClick={() => handleStatusUpdate(request.id, 'rejected')}
-                                      title="Reject"
-                                    >
-                                      <i className="bi bi-x-lg"></i>
-                                    </button>
-                                  </>
-                                )}
-                                {(request.status === 'approved' || request.status === 'pending') && (
-                                  <button
-                                    className="btn btn-primary"
-                                    onClick={() => openScheduleModal(request)}
-                                    title="Schedule"
-                                  >
-                                    <i className="bi bi-calendar-check"></i>
-                                  </button>
-                                )}
-                                <button
-                                  className="btn btn-outline-danger"
-                                  onClick={() => handleDelete(request.id)}
-                                  title="Delete"
-                                >
-                                  <i className="bi bi-trash"></i>
-                                </button>
+                    </thead>
+                    <tbody>
+                      {requests.length === 0 ? (
+                        <tr>
+                          <td colSpan="9">
+                            <div className="empty-state">
+                              <div className="empty-state-icon">
+                                <i className="bi bi-inbox"></i>
                               </div>
-                            ) : (
-                              <span className="badge bg-secondary">
-                                <i className="bi bi-eye-fill me-1"></i>
-                                View Only
-                              </span>
-                            )}
+                              <p className="empty-state-text">No requests found</p>
+                              <small>Try adjusting your filters</small>
+                            </div>
                           </td>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                      ) : (
+                        requests.map((request) => (
+                          <tr key={request.id}>
+                            <td><strong>#{request.id}</strong></td>
+                            <td>{request.customer_name}</td>
+                            <td>
+                              <i className="bi bi-telephone me-1"></i>
+                              {request.phone}
+                            </td>
+                            <td>
+                              <i className="bi bi-geo-alt me-1"></i>
+                              {request.pickup_location || '-'}
+                            </td>
+                            <td>
+                              <i className="bi bi-geo-alt-fill me-1"></i>
+                              {request.dropoff_location || '-'}
+                            </td>
+                            <td>
+                              <i className="bi bi-clock me-1"></i>
+                              {new Date(request.pickup_time).toLocaleString()}
+                            </td>
+                            <td>
+                              <i className="bi bi-people me-1"></i>
+                              {request.passengers || '-'}
+                            </td>
+                            <td>
+                              <span className={`status-badge status-${request.status}`}>
+                                {request.status}
+                              </span>
+                            </td>
+                            <td>
+                              {isCoordinator ? (
+                                <div className="action-btn-group">
+                                  {request.status === 'pending' && (
+                                    <>
+                                      <button
+                                        className="action-btn action-btn-approve"
+                                        onClick={() => handleStatusUpdate(request.id, 'approved')}
+                                        title="Approve"
+                                      >
+                                        <i className="bi bi-check-lg"></i>
+                                      </button>
+                                      <button
+                                        className="action-btn action-btn-reject"
+                                        onClick={() => handleStatusUpdate(request.id, 'rejected')}
+                                        title="Reject"
+                                      >
+                                        <i className="bi bi-x-lg"></i>
+                                      </button>
+                                    </>
+                                  )}
+                                  {(request.status === 'approved' || request.status === 'pending') && (
+                                    <button
+                                      className="action-btn action-btn-schedule"
+                                      onClick={() => openScheduleModal(request)}
+                                      title="Schedule"
+                                    >
+                                      <i className="bi bi-calendar-check"></i>
+                                    </button>
+                                  )}
+                                  <button
+                                    className="action-btn action-btn-delete"
+                                    onClick={() => handleDelete(request.id)}
+                                    title="Delete"
+                                  >
+                                    <i className="bi bi-trash"></i>
+                                  </button>
+                                </div>
+                              ) : (
+                                <span className="badge bg-secondary">
+                                  <i className="bi bi-eye-fill me-1"></i>
+                                  View Only
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
 
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <nav>
-                  <ul className="pagination justify-content-center">
-                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                      <button
-                        className="page-link"
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                        disabled={currentPage === 1}
-                      >
-                        Previous
-                      </button>
-                    </li>
-                    {[...Array(totalPages)].map((_, index) => (
-                      <li
-                        key={index + 1}
-                        className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}
-                      >
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <nav className="mt-4">
+                    <ul className="pagination justify-content-center">
+                      <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
                         <button
                           className="page-link"
-                          onClick={() => setCurrentPage(index + 1)}
+                          onClick={() => setCurrentPage(currentPage - 1)}
+                          disabled={currentPage === 1}
                         >
-                          {index + 1}
+                          <i className="bi bi-chevron-left me-1"></i>
+                          Previous
                         </button>
                       </li>
-                    ))}
-                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                      <button
-                        className="page-link"
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                      >
-                        Next
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
-              )}
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Schedule Modal */}
-      {showModal && (
-        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Schedule Request</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setShowModal(false)}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <p><strong>Customer:</strong> {selectedRequest?.customer_name}</p>
-                <p><strong>Phone:</strong> {selectedRequest?.phone}</p>
-                
-                <div className="mb-3">
-                  <label className="form-label">Select Driver</label>
-                  <select
-                    className="form-select"
-                    value={scheduleData.driver_id}
-                    onChange={(e) => setScheduleData({...scheduleData, driver_id: e.target.value})}
-                  >
-                    <option value="">Choose driver...</option>
-                    {drivers.map((driver) => (
-                      <option key={driver.id} value={driver.id}>
-                        {driver.name} ({driver.phone})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Select Vehicle</label>
-                  <select
-                    className="form-select"
-                    value={scheduleData.vehicle_id}
-                    onChange={(e) => setScheduleData({...scheduleData, vehicle_id: e.target.value})}
-                  >
-                    <option value="">Choose vehicle...</option>
-                    {vehicles.map((vehicle) => (
-                      <option key={vehicle.id} value={vehicle.id}>
-                        {vehicle.plate} (Capacity: {vehicle.capacity})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Scheduled Time</label>
-                  <input
-                    type="datetime-local"
-                    className="form-control"
-                    value={scheduleData.scheduled_time}
-                    onChange={(e) => setScheduleData({...scheduleData, scheduled_time: e.target.value})}
-                  />
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => setShowModal(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={handleSchedule}
-                >
-                  <i className="bi bi-calendar-check me-2"></i>
-                  Schedule
-                </button>
+                      {[...Array(totalPages)].map((_, index) => (
+                        <li
+                          key={index + 1}
+                          className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}
+                        >
+                          <button
+                            className="page-link"
+                            onClick={() => setCurrentPage(index + 1)}
+                          >
+                            {index + 1}
+                          </button>
+                        </li>
+                      ))}
+                      <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                        <button
+                          className="page-link"
+                          onClick={() => setCurrentPage(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                        >
+                          Next
+                          <i className="bi bi-chevron-right ms-1"></i>
+                        </button>
+                      </li>
+                    </ul>
+                  </nav>
+                )}
               </div>
             </div>
+          </>
+        )}
+
+        {/* Schedule Modal */}
+        {showModal && (
+          <div className="modal show d-block schedule-modal" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">
+                    <i className="bi bi-calendar-check me-2"></i>
+                    Schedule Request
+                  </h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={() => setShowModal(false)}
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <div className="customer-info">
+                    <p><i className="bi bi-person-fill me-2"></i><strong>Customer:</strong> {selectedRequest?.customer_name}</p>
+                    <p className="mb-0"><i className="bi bi-telephone-fill me-2"></i><strong>Phone:</strong> {selectedRequest?.phone}</p>
+                  </div>
+                  
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold">
+                      <i className="bi bi-person-badge me-2"></i>
+                      Select Driver
+                    </label>
+                    <select
+                      className="form-select"
+                      value={scheduleData.driver_id}
+                      onChange={(e) => setScheduleData({...scheduleData, driver_id: e.target.value})}
+                    >
+                      <option value="">Choose driver...</option>
+                      {drivers.map((driver) => (
+                        <option key={driver.id} value={driver.id}>
+                          {driver.name} ({driver.phone})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold">
+                      <i className="bi bi-truck me-2"></i>
+                      Select Vehicle
+                    </label>
+                    <select
+                      className="form-select"
+                      value={scheduleData.vehicle_id}
+                      onChange={(e) => setScheduleData({...scheduleData, vehicle_id: e.target.value})}
+                    >
+                      <option value="">Choose vehicle...</option>
+                      {vehicles.map((vehicle) => (
+                        <option key={vehicle.id} value={vehicle.id}>
+                          {vehicle.plate} (Capacity: {vehicle.capacity})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold">
+                      <i className="bi bi-calendar-event me-2"></i>
+                      Scheduled Time
+                    </label>
+                    <input
+                      type="datetime-local"
+                      className="form-control"
+                      value={scheduleData.scheduled_time}
+                      onChange={(e) => setScheduleData({...scheduleData, scheduled_time: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setShowModal(false)}
+                  >
+                    <i className="bi bi-x-lg me-2"></i>
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={handleSchedule}
+                  >
+                    <i className="bi bi-calendar-check me-2"></i>
+                    Schedule Trip
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
