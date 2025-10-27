@@ -1,0 +1,18 @@
+# Dockerignore file for backend
+node_modules
+npm-debug.log
+coverage
+.env
+.git
+.gitignore
+README.md
+__tests__
+*.test.js
+.eslintrc.js
+.prettierrc
+.eslintignore
+.prettierignore
+jest.config.js
+jest.setup.js
+app.db
+*.db
