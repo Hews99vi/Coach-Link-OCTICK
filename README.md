@@ -14,15 +14,24 @@ This is a monorepo containing:
 
 ## 🚀 Deployment
 
-**Ready to deploy?** See our complete deployment guide:
+**Ready to deploy?** Choose your platform:
 
-📖 **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Step-by-step instructions for deploying on Render.com (100% FREE)
+### 🚂 **Railway.app** ⭐ **RECOMMENDED - No Credit Card!**
+📖 **[RAILWAY_DEPLOYMENT_GUIDE.md](./RAILWAY_DEPLOYMENT_GUIDE.md)** - Easiest setup, $5 free credit/month
 
-**Quick Deploy Links:**
-- Deploy Backend: [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com)
-- Deploy Frontend: Same as above, follow the guide
+**Why Railway:**
+- ✅ **No credit card required**
+- ✅ $5 free credit/month (~500 hours)
+- ✅ Fastest setup (10 minutes)
+- ✅ No sleep issues
+- ✅ Auto-deploy from GitHub
 
-**Live Demo** (Coming soon): `https://coach-link.onrender.com`
+### 🎨 Alternative: Render.com
+📖 **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Render.com deployment (requires card now)
+
+**Quick Links:**
+- Railway: https://railway.app (Start here!)
+- Render: https://render.com
 
 ## 📋 Table of Contents
 
@@ -481,33 +490,37 @@ npm test
 
 ### Free Deployment Options
 
-1. **Render.com** ⭐ **RECOMMENDED**
+1. **Railway.app** ⭐ **RECOMMENDED - No Card Required!**
+   - ✅ $5 free credit/month (~500 hours)
+   - ✅ No credit card needed
+   - ✅ PostgreSQL included
+   - ✅ No sleep issues
+   - ✅ Auto-deploy from GitHub
+   - 📖 **[Complete Guide](./RAILWAY_DEPLOYMENT_GUIDE.md)**
+
+2. **Render.com** (Now requires card)
    - ✅ Free PostgreSQL database
    - ✅ Auto-deploy from GitHub
-   - ✅ Free SSL certificates
-   - 📖 [Complete Guide](./DEPLOYMENT_GUIDE.md)
+   - ⚠️ Credit card required (even for free tier)
+   - 📖 [Alternative Guide](./DEPLOYMENT_GUIDE.md)
 
-2. **Vercel (Frontend) + Render (Backend)**
+3. **Vercel (Frontend) + Railway (Backend)**
    - ✅ Ultra-fast frontend delivery
-   - ✅ Serverless at scale
-   - 📖 See deployment guide
+   - ✅ Best performance
+   - 📖 See Railway guide for backend
 
-3. **Railway.app**
-   - ✅ $5 free credit/month
-   - ✅ Easy PostgreSQL setup
+### Quick Deploy with Railway (10 minutes)
 
-### Quick Deploy
+1. **Sign up**: https://railway.app (use GitHub)
+2. **Create Project**: Deploy from GitHub repo
+3. **Add Database**: PostgreSQL (1-click)
+4. **Configure Services**:
+   - Backend: Set root directory to `backend`
+   - Frontend: Set root directory to `frontend`
+5. **Add Variables**: JWT_SECRET, DATABASE_URL
+6. **Done!** ✅
 
-See **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** for complete instructions.
-
-**Deployment checklist:**
-- [ ] Create Render account
-- [ ] Deploy PostgreSQL database
-- [ ] Deploy backend with environment variables
-- [ ] Deploy frontend with API URL
-- [ ] Update CORS settings
-- [ ] Test login and features
-- [ ] Set up uptime monitoring (optional)
+See **[RAILWAY_DEPLOYMENT_GUIDE.md](./RAILWAY_DEPLOYMENT_GUIDE.md)** for detailed step-by-step instructions.
 
 ### Environment Variables
 
