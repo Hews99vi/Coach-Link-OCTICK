@@ -1,15 +1,28 @@
 # 🚌 Coach-Link - Professional Transportation Management System
 
-A comprehensive fullstack transportation request management platform with real-time updates, role-based access control, and professional UI/UX. Built with Node.js/Express backend, React frontend, and SQLite database.
+A comprehensive fullstack transportation request management platform with real-time updates, role-based access control, and professional UI/UX. Built with Node.js/Express backend, React frontend, and PostgreSQL/SQLite database.
 
 [![WCAG 2.1 AA](https://img.shields.io/badge/WCAG-2.1%20AA-green)](https://www.w3.org/WAI/WCAG21/quickref/)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+[![Production Ready](https://img.shields.io/badge/Production-Ready-brightgreen)](https://render.com)
 
 ## 🏗️ Architecture Overview
 
 This is a monorepo containing:
-- **Backend**: Node.js/Express REST API with SQLite database, JWT auth, SSE real-time updates
+- **Backend**: Node.js/Express REST API with PostgreSQL (production) or SQLite (dev), JWT auth, SSE real-time updates
 - **Frontend**: React SPA with Bootstrap 5, Chart.js, and custom hooks
+
+## 🚀 Deployment
+
+**Ready to deploy?** See our complete deployment guide:
+
+📖 **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Step-by-step instructions for deploying on Render.com (100% FREE)
+
+**Quick Deploy Links:**
+- Deploy Backend: [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com)
+- Deploy Frontend: Same as above, follow the guide
+
+**Live Demo** (Coming soon): `https://coach-link.onrender.com`
 
 ## 📋 Table of Contents
 
@@ -267,19 +280,22 @@ Coach-Link-/
 - ✅ Clear separation of concerns
 - ✅ Logical folder structure
 
-## �️ Technology Stack
+## 🛠️ Technology Stack
 
 ### Backend
 | Technology | Purpose | Version |
 |------------|---------|---------|
 | **Node.js** | Runtime environment | 14.x+ |
 | **Express** | Web framework | 5.1.0 |
-| **SQLite3** | Database | 5.1.7 |
+| **PostgreSQL** | Production database | Latest |
+| **SQLite3** | Development database | 5.1.7 |
 | **Sequelize** | ORM | 6.37.5 |
 | **JWT** | Authentication | jsonwebtoken 9.0.2 |
 | **bcryptjs** | Password hashing | 2.4.3 |
 | **express-validator** | Input validation | 7.2.1 |
 | **cors** | CORS middleware | 2.8.5 |
+
+**Database**: Automatically uses PostgreSQL in production (via `DATABASE_URL`), SQLite for local development.
 
 ### Frontend
 | Technology | Purpose | Version |
@@ -461,35 +477,61 @@ cd frontend
 npm test
 ```
 
-## 📦 Deployment Considerations
+## 📦 Deployment
 
-### Backend Deployment
+### Free Deployment Options
 
-1. Set `NODE_ENV=production`
-2. Use a process manager (PM2, systemd)
-3. Consider migrating from SQLite to PostgreSQL/MySQL
-4. Implement proper logging (Winston, Morgan)
-5. Set up reverse proxy (Nginx)
-6. Enable HTTPS
-7. Implement rate limiting
-8. Set up database backups
+1. **Render.com** ⭐ **RECOMMENDED**
+   - ✅ Free PostgreSQL database
+   - ✅ Auto-deploy from GitHub
+   - ✅ Free SSL certificates
+   - 📖 [Complete Guide](./DEPLOYMENT_GUIDE.md)
 
-### Frontend Deployment
+2. **Vercel (Frontend) + Render (Backend)**
+   - ✅ Ultra-fast frontend delivery
+   - ✅ Serverless at scale
+   - 📖 See deployment guide
 
-1. Build production bundle: `npm run build`
-2. Deploy to static hosting (Netlify, Vercel, S3)
-3. Configure environment variables
-4. Set up CDN for assets
-5. Enable HTTPS
+3. **Railway.app**
+   - ✅ $5 free credit/month
+   - ✅ Easy PostgreSQL setup
 
-### Database Migration (SQLite → PostgreSQL)
+### Quick Deploy
 
-For production, consider:
-1. Export data from SQLite
-2. Set up PostgreSQL instance
-3. Update Sequelize configuration
-4. Import data to PostgreSQL
-5. Test thoroughly before switching
+See **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** for complete instructions.
+
+**Deployment checklist:**
+- [ ] Create Render account
+- [ ] Deploy PostgreSQL database
+- [ ] Deploy backend with environment variables
+- [ ] Deploy frontend with API URL
+- [ ] Update CORS settings
+- [ ] Test login and features
+- [ ] Set up uptime monitoring (optional)
+
+### Environment Variables
+
+#### Production Backend (Render)
+```env
+NODE_ENV=production
+PORT=10000
+DATABASE_URL=<from Render PostgreSQL>
+JWT_SECRET=<generate 32+ char secret>
+FRONTEND_URL=https://your-frontend.onrender.com
+```
+
+#### Production Frontend (Render/Vercel)
+```env
+REACT_APP_API_URL=https://your-backend.onrender.com/api
+```
+
+### Database Migration
+
+The app automatically uses:
+- **PostgreSQL** when `DATABASE_URL` is set (production)
+- **SQLite** for local development
+
+No code changes needed for deployment! 🎉
 
 ## 🤝 Contributing
 
