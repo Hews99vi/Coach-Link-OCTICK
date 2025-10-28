@@ -1,31 +1,92 @@
-# Coach-Link Platform
+# 🚌 Coach-Link - Professional Transportation Management System
 
-A fullstack coaching platform built with Node.js/Express backend, React frontend, and SQLite database. This application facilitates connections between coaches and clients, providing scheduling, session management, and progress tracking capabilities.
+A comprehensive fullstack transportation request management platform with real-time updates, role-based access control, and professional UI/UX. Built with Node.js/Express backend, React frontend, and SQLite database.
+
+[![WCAG 2.1 AA](https://img.shields.io/badge/WCAG-2.1%20AA-green)](https://www.w3.org/WAI/WCAG21/quickref/)
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
 ## 🏗️ Architecture Overview
 
 This is a monorepo containing:
-- **Backend**: Node.js/Express REST API with SQLite database
-- **Frontend**: React single-page application
+- **Backend**: Node.js/Express REST API with SQLite database, JWT auth, SSE real-time updates
+- **Frontend**: React SPA with Bootstrap 5, Chart.js, and custom hooks
 
 ## 📋 Table of Contents
 
+- [Features](#features)
 - [Prerequisites](#prerequisites)
+- [Quick Start](#quick-start)
 - [Installation](#installation)
 - [Running Locally](#running-locally)
 - [Project Structure](#project-structure)
+- [Technology Stack](#technology-stack)
 - [API Documentation](#api-documentation)
+- [Authentication & Authorization](#authentication--authorization)
+- [Real-Time Updates](#real-time-updates)
+- [Accessibility](#accessibility)
 - [Environment Variables](#environment-variables)
 - [Development Notes](#development-notes)
 - [Testing](#testing)
 - [Deployment Considerations](#deployment-considerations)
+- [Contributing](#contributing)
+
+## ✨ Features
+
+### Core Features
+- ✅ **Professional Landing Page** - Modern hero section with services and contact
+- ✅ **Trip Request Management** - Book transportation with detailed validation
+- ✅ **Role-Based Access Control** - Coordinator (full access) and Viewer (read-only) roles
+- ✅ **Real-Time Updates** - Server-Sent Events (SSE) for live status notifications
+- ✅ **Admin Dashboard** - Complete management interface with analytics
+- ✅ **Request Lifecycle** - Pending → Approved → Scheduled → Completed workflow
+- ✅ **Driver & Vehicle Assignment** - Schedule trips with available resources
+- ✅ **Analytics Dashboard** - Visual charts showing request trends
+- ✅ **Search & Filtering** - Find requests by name, phone, or status
+- ✅ **Pagination** - Efficient data loading for large datasets
+
+### Accessibility Features (WCAG 2.1 Level AA Compliant)
+- ✅ Skip navigation links for keyboard users
+- ✅ Proper ARIA labels and landmarks
+- ✅ Focus indicators on all interactive elements
+- ✅ Screen reader optimized
+- ✅ High contrast color schemes
 
 ## ✅ Prerequisites
 
-Before you begin, ensure you have the following installed:
-- **Node.js** (v14.x or higher)
-- **npm** (v6.x or higher)
-- **Git**
+Before you begin, ensure you have installed:
+
+| Software | Version | Download |
+|----------|---------|----------|
+| **Node.js** | v14.x or higher | [nodejs.org](https://nodejs.org/) |
+| **npm** | v6.x or higher | Included with Node.js |
+| **Git** | Latest | [git-scm.com](https://git-scm.com/) |
+
+## 🚀 Quick Start
+
+Get up and running in **3 minutes**:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/Hews99vi/Coach-Link-OCTICK.git
+cd Coach-Link-
+
+# 2. Install all dependencies (backend + frontend)
+npm run install:all
+
+# 3. Initialize database with default users
+cd backend && npm run init:db && cd ..
+
+# 4. Start both servers concurrently
+npm run dev
+```
+
+🎉 Open http://localhost:3000 to see the application!
+
+**Default Login Credentials**:
+- **Coordinator**: `coordinator` / `password` (Full access)
+- **Viewer**: `viewer` / `viewer123` (Read-only access)
+
+⚠️ **Change these passwords in production!**
 
 ## 🚀 Installation
 
@@ -60,41 +121,74 @@ cd ..
 
 ### 5. Set up environment variables
 
-Copy the `.env.example` file to `.env` in the backend directory:
+Create a `.env` file in the `backend` directory:
 
 ```bash
-cp .env.example backend/.env
+cd backend
+cp .env.example .env
 ```
 
-Edit the `.env` file and add your configuration:
-- `JWT_SECRET`: A secure random string for JWT token generation
-- `COORDINATOR_PASSWORD`: Hashed password for coordinator access
-- `PORT`: Backend server port (default: 5000)
-- `DATABASE_PATH`: Path to SQLite database file
+Edit `backend/.env` with your configuration:
+
+```env
+# Server Configuration
+PORT=5000
+NODE_ENV=development
+
+# Database
+DATABASE_PATH=./database.sqlite
+
+# JWT Configuration
+JWT_SECRET=your_super_secret_jwt_key_change_in_production
+JWT_EXPIRES_IN=1h
+
+# CORS Configuration
+ALLOWED_ORIGINS=http://localhost:3000
+```
+
+⚠️ **Security Warning**: Change `JWT_SECRET` to a strong random value in production!
+
+### 6. Initialize Database
+
+```bash
+cd backend
+npm run init:db
+```
+
+This creates the database and seeds it with default users:
+- **Coordinator**: `coordinator` / `password`
+- **Viewer**: `viewer` / `viewer123`
+- **Admin**: `admin` / `admin123`
 
 ## 🏃 Running Locally
 
-### Development Mode
+### Development Mode (Recommended)
 
-#### Start the backend server:
+#### Option 1: Run Both Servers Concurrently (Easiest)
 
+From the **root directory**:
+
+```bash
+npm run dev
+```
+
+This starts:
+- **Backend API** on http://localhost:5000
+- **Frontend React app** on http://localhost:3000
+
+#### Option 2: Run Servers Separately
+
+**Terminal 1 - Backend:**
 ```bash
 cd backend
 npm run dev
 ```
 
-The backend API will run on `http://localhost:5000` (or your configured PORT).
-
-#### Start the frontend development server:
-
-Open a new terminal window:
-
+**Terminal 2 - Frontend:**
 ```bash
 cd frontend
 npm start
 ```
-
-The React app will run on `http://localhost:3000` and automatically open in your browser.
 
 ### Production Build
 
@@ -105,43 +199,102 @@ cd frontend
 npm run build
 ```
 
-#### Serve the production build:
+#### Start production server:
 
-The backend can be configured to serve the static frontend build files.
+```bash
+cd backend
+NODE_ENV=production npm start
+```
+
+The backend can serve the static frontend build files in production.
 
 ## 📁 Project Structure
 
 ```
 Coach-Link-/
-├── backend/
-│   ├── config/          # Configuration files
-│   ├── controllers/     # Route controllers
-│   ├── middleware/      # Custom middleware (auth, validation)
-│   ├── models/          # Sequelize models
-│   ├── routes/          # API routes
-│   ├── utils/           # Helper functions
-│   ├── tests/           # Jest test files
-│   ├── server.js        # Express server entry point
-│   ├── package.json
-│   └── .env
-├── frontend/
-│   ├── public/          # Static files
+├── backend/                    # Node.js/Express API
+│   ├── middleware/            # Auth, validation, error handling
+│   │   ├── auth.js           # JWT authentication (150 lines)
+│   │   ├── validation.js     # Request validation
+│   │   └── errorHandler.js   # Global error handler
+│   ├── models/               # Sequelize ORM models
+│   │   ├── user.js          # User model (RBAC)
+│   │   ├── serviceRequest.js # Service request model
+│   │   ├── driver.js        # Driver model
+│   │   ├── vehicle.js       # Vehicle model
+│   │   └── assignment.js    # Assignment model
+│   ├── routes/              # API route handlers
+│   │   ├── auth.js         # Authentication routes
+│   │   ├── requests.js     # Request CRUD + scheduling (410 lines)
+│   │   ├── drivers.js      # Driver management
+│   │   ├── vehicles.js     # Vehicle management
+│   │   ├── analytics.js    # Analytics endpoints (180 lines)
+│   │   └── events.js       # SSE real-time updates (126 lines)
+│   ├── seeders/            # Database seeders
+│   │   └── seedUsers.js    # Default user accounts
+│   ├── __tests__/          # Jest tests
+│   ├── app.js              # Express app setup
+│   ├── database.sqlite     # SQLite database (auto-created)
+│   └── package.json
+│
+├── frontend/                # React SPA
+│   ├── public/             # Static files
 │   ├── src/
-│   │   ├── components/  # React components
-│   │   ├── pages/       # Page components
-│   │   ├── services/    # API service functions
-│   │   ├── utils/       # Utility functions
-│   │   ├── App.js       # Main app component
-│   │   └── index.js     # Entry point
-│   ├── package.json
-│   └── .env
+│   │   ├── components/     # React components
+│   │   │   ├── LandingPage.js      # Professional landing page (417 lines)
+│   │   │   ├── RequestForm.js      # Trip request form (407 lines)
+│   │   │   ├── AdminPanel.js       # Admin dashboard (782 lines ⚠️)
+│   │   │   ├── Login.js            # Login component
+│   │   │   ├── SkipLink.js         # Accessibility skip link
+│   │   │   └── *.css               # Component styles
+│   │   ├── hooks/          # Custom React hooks
+│   │   │   └── useSSE.js   # Server-Sent Events hook (159 lines)
+│   │   ├── App.js          # Main app component
+│   │   └── index.js        # Entry point
+│   └── package.json
+│
 ├── .gitignore
-├── .env.example
-├── package.json
-└── README.md
+├── package.json            # Root package.json (convenience scripts)
+├── README.md              # This file
+├── ACCESSIBILITY_AUDIT.md # WCAG 2.1 compliance report
+├── PROJECT_QUALITY_AUDIT.md # Code quality assessment
+└── docker-compose.yml     # Docker configuration (optional)
 ```
 
-## 🔌 API Documentation
+**File Size Guidelines**:
+- ✅ Most files under 500 lines
+- ⚠️ `AdminPanel.js` (782 lines) - **needs refactoring** into smaller components
+- ✅ Clear separation of concerns
+- ✅ Logical folder structure
+
+## �️ Technology Stack
+
+### Backend
+| Technology | Purpose | Version |
+|------------|---------|---------|
+| **Node.js** | Runtime environment | 14.x+ |
+| **Express** | Web framework | 5.1.0 |
+| **SQLite3** | Database | 5.1.7 |
+| **Sequelize** | ORM | 6.37.5 |
+| **JWT** | Authentication | jsonwebtoken 9.0.2 |
+| **bcryptjs** | Password hashing | 2.4.3 |
+| **express-validator** | Input validation | 7.2.1 |
+| **cors** | CORS middleware | 2.8.5 |
+
+### Frontend
+| Technology | Purpose | Version |
+|------------|---------|---------|
+| **React** | UI library | 18.3.1 |
+| **React Router** | Client-side routing | 6.29.0 |
+| **Axios** | HTTP client | 1.7.9 |
+| **Chart.js** | Data visualization | 4.4.7 |
+| **Bootstrap 5** | CSS framework | Via CDN |
+
+### Features
+- **Server-Sent Events (SSE)** - Real-time updates (not polling!)
+- **Role-Based Access Control** - Coordinator and Viewer roles
+- **JWT Authentication** - Secure stateless auth
+- **WCAG 2.1 Level AA** - Full accessibility compliance
 
 ### Base URL
 ```

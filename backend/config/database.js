@@ -1,34 +1,58 @@
-// Set up Sequelize with SQLite. Include connection to a file-based DB 'app.db', 
-// enable logging false in prod. Use dotenv for env vars.
+// Set up Sequelize with SQLite (dev) or PostgreSQL (production)
+// Supports both local development and cloud deployment
 
 require('dotenv').config();
 const { Sequelize } = require('sequelize');
 const path = require('path');
 
-// Determine the database path - use env var or default to app.db in backend root
-const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '..', 'app.db');
+// Create Sequelize instance based on environment
+let sequelize;
 
-// Create Sequelize instance with SQLite
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: dbPath,
-  logging: process.env.NODE_ENV === 'production' ? false : console.log,
-  define: {
-    // Use snake_case for automatically added timestamp fields
-    underscored: true,
-    // Add timestamps to all models by default
-    timestamps: true,
-    // Use createdAt and updatedAt instead of created_at and updated_at
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-  },
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000,
-  },
-});
+if (process.env.DATABASE_URL) {
+  // Production: Use PostgreSQL (Render, Railway, etc.)
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    },
+    logging: false,
+    define: {
+      underscored: true,
+      timestamps: true,
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+    },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
+  });
+} else {
+  // Development: Use SQLite
+  const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '..', 'app.db');
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: dbPath,
+    logging: process.env.NODE_ENV === 'production' ? false : console.log,
+    define: {
+      underscored: true,
+      timestamps: true,
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+    },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
+  });
+}
 
 // Test the connection
 const testConnection = async () => {
