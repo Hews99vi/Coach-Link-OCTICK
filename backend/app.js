@@ -94,7 +94,7 @@ app.use((err, req, res, next) => {
 
 // Start server
 const port = process.env.PORT || 3000; // Use Railway's PORT or fallback to 3000
-const host = '0.0.0.0'; // Required for Railway proxy access
+const host = '::'; // Bind to IPv6 all interfaces (supports IPv4 too)
 
 // Sync database and start server
 const startServer = async () => {
@@ -119,7 +119,7 @@ const startServer = async () => {
     app.listen(port, host, () => {
       console.log(`🚀 Server is running on port ${port}`);
       console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`📊 API available at http://${host}:${port}/api`);
+      console.log(`📊 API available at http://[::]:${port}/api`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
