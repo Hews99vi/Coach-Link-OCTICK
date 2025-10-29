@@ -35,6 +35,8 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 app.use(cors(corsOptions));
+// Handle CORS preflight for all routes
+app.options('*', cors(corsOptions));
 
 // Body parser middleware
 app.use(express.json());
