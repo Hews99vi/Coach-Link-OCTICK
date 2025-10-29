@@ -10,6 +10,10 @@ export function getApiBaseUrl() {
   }
 
   if (typeof window !== 'undefined' && window.location && window.location.origin) {
+    // On Railway frontend domains, default to the deployed backend URL
+    if (window.location.hostname.endsWith('railway.app')) {
+      return 'https://coach-link-octick-production.up.railway.app/api';
+    }
     return `${window.location.origin.replace(/\/$/, '')}/api`;
   }
 

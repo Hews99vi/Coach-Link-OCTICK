@@ -87,6 +87,14 @@ const startServer = async () => {
     await db.sequelize.sync();
     console.log('✓ Database schema synced');
 
+    // Seed default users if none exist
+    try {
+      const seedUsers = require('./seeders/seedUsers');
+      await seedUsers();
+    } catch (seedErr) {
+      console.warn('User seeding step skipped or failed:', seedErr?.message || seedErr);
+    }
+
     // Start listening
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
