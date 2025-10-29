@@ -38,6 +38,15 @@ app.use(cors(corsOptions));
 // Express v5 doesn't support the '*' path in app.options; handle preflight manually
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
+    const allowedOrigins = corsOptions.origin || [];
+    const requestOrigin = req.headers.origin;
+    if (Array.isArray(allowedOrigins) && requestOrigin && allowedOrigins.includes(requestOrigin)) {
+      res.setHeader('Access-Control-Allow-Origin', requestOrigin);
+    }
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', corsOptions.methods.join(', '));
+    res.setHeader('Access-Control-Allow-Headers', corsOptions.allowedHeaders.join(', '));
     return res.sendStatus(204);
   }
   next();
