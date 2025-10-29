@@ -17,15 +17,15 @@ COPY . .
 RUN mkdir -p /usr/src/app/data
 
 # Expose port
-EXPOSE 5000
+EXPOSE 3000
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV PORT=5000
+ENV PORT=3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:5000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+# Health check (matches app.js /health and Railway PORT)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD node -e "require('http').get(`http://localhost:${process.env.PORT || 3000}/health`, (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
 # Start the application with migrations and seeds
 CMD sh -lc "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && node app.js"
