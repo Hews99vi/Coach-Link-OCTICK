@@ -8,8 +8,14 @@
     "storage": ":memory:"
   },
   "production": {
-    "dialect": "sqlite",
-    "storage": "./app.db",
-    "logging": false
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "postgres",
+    "logging": false,
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
   }
 }
