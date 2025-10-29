@@ -35,8 +35,13 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 app.use(cors(corsOptions));
-// Handle CORS preflight for all routes
-app.options('*', cors(corsOptions));
+// Express v5 doesn't support the '*' path in app.options; handle preflight manually
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
 
 // Body parser middleware
 app.use(express.json());
