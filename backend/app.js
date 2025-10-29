@@ -93,7 +93,8 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const port = process.env.PORT || 3000; // Use Railway's PORT or fallback to 3000
+const host = '0.0.0.0'; // Required for Railway proxy access
 
 // Sync database and start server
 const startServer = async () => {
@@ -115,17 +116,16 @@ const startServer = async () => {
     }
 
     // Start listening
-    const host = '0.0.0.0';
-    app.listen(PORT, host, () => {
-      console.log(`🚀 Server is running on port ${PORT}`);
+    app.listen(port, host, () => {
+      console.log(`🚀 Server is running on port ${port}`);
       console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`📊 API available at http://${host}:${PORT}/api`);
+      console.log(`📊 API available at http://${host}:${port}/api`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
     process.exit(1);
   }
-};
+}
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
