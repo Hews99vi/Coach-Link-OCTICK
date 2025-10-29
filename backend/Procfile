@@ -1,1 +1,1 @@
-web: node app.js
+web: sh -lc "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && node app.js"
