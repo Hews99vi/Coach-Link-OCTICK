@@ -36,7 +36,8 @@ ChartJS.register(
 
 const AdminPanel = () => {
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+  const { getApiBaseUrl } = require('../config');
+  const API_URL = getApiBaseUrl();
 
   // Get user info from localStorage
   const user = JSON.parse(localStorage.getItem('user') || '{}');

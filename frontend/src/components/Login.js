@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import SkipLink from './SkipLink';
+import { getApiBaseUrl } from '../config';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -42,7 +43,7 @@ const Login = () => {
     setError('');
 
     try {
-      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+      const API_URL = getApiBaseUrl();
       
       const response = await axios.post(`${API_URL}/auth/login`, {
         username: formData.username,
