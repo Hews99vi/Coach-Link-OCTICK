@@ -14,44 +14,16 @@ This is a monorepo containing:
 
 ## 🚀 Deployment
 
-**Ready to deploy?** Choose your platform:
-
-### 🚂 **Railway.app** ⭐ **RECOMMENDED - No Credit Card!**
-📖 **[RAILWAY_DEPLOYMENT_GUIDE.md](./RAILWAY_DEPLOYMENT_GUIDE.md)** - Easiest setup, $5 free credit/month
-
 **Why Railway:**
-- ✅ **No credit card required**
 - ✅ $5 free credit/month (~500 hours)
 - ✅ Fastest setup (10 minutes)
 - ✅ No sleep issues
 - ✅ Auto-deploy from GitHub
 
-### 🎨 Alternative: Render.com
-📖 **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Render.com deployment (requires card now)
 
 **Quick Links:**
-- Railway: https://railway.app (Start here!)
-- Render: https://render.com
-
-## 📋 Table of Contents
-
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Quick Start](#quick-start)
-- [Installation](#installation)
-- [Running Locally](#running-locally)
-- [Project Structure](#project-structure)
-- [Technology Stack](#technology-stack)
-- [API Documentation](#api-documentation)
-- [Authentication & Authorization](#authentication--authorization)
-- [Real-Time Updates](#real-time-updates)
-- [Accessibility](#accessibility)
-- [Environment Variables](#environment-variables)
-- [Development Notes](#development-notes)
-- [Testing](#testing)
-- [Deployment Considerations](#deployment-considerations)
-- [Contributing](#contributing)
-
+- Railway: https://railway.app 
+-
 ## ✨ Features
 
 ### Core Features
@@ -331,7 +303,7 @@ http://localhost:5000/api
 Most endpoints require JWT authentication. Include the token in the Authorization header:
 
 ```
-Authorization: Bearer <your_jwt_token>
+Authorization: Bearer <>
 ```
 
 ### Endpoints
@@ -486,57 +458,16 @@ cd frontend
 npm test
 ```
 
-## 📦 Deployment
+## 📦 Deployment - https://coach-link-octick-production-680b.up.railway.app/
 
-### Free Deployment Options
 
-1. **Railway.app** ⭐ **RECOMMENDED - No Card Required!**
+1. **Railway.app** ⭐
    - ✅ $5 free credit/month (~500 hours)
    - ✅ No credit card needed
    - ✅ PostgreSQL included
    - ✅ No sleep issues
    - ✅ Auto-deploy from GitHub
-   - 📖 **[Complete Guide](./RAILWAY_DEPLOYMENT_GUIDE.md)**
-
-2. **Render.com** (Now requires card)
-   - ✅ Free PostgreSQL database
-   - ✅ Auto-deploy from GitHub
-   - ⚠️ Credit card required (even for free tier)
-   - 📖 [Alternative Guide](./DEPLOYMENT_GUIDE.md)
-
-3. **Vercel (Frontend) + Railway (Backend)**
-   - ✅ Ultra-fast frontend delivery
-   - ✅ Best performance
-   - 📖 See Railway guide for backend
-
-### Quick Deploy with Railway (10 minutes)
-
-1. **Sign up**: https://railway.app (use GitHub)
-2. **Create Project**: Deploy from GitHub repo
-3. **Add Database**: PostgreSQL (1-click)
-4. **Configure Services**:
-   - Backend: Set root directory to `backend`
-   - Frontend: Set root directory to `frontend`
-5. **Add Variables**: JWT_SECRET, DATABASE_URL
-6. **Done!** ✅
-
-See **[RAILWAY_DEPLOYMENT_GUIDE.md](./RAILWAY_DEPLOYMENT_GUIDE.md)** for detailed step-by-step instructions.
-
-### Environment Variables
-
-#### Production Backend (Render)
-```env
-NODE_ENV=production
-PORT=10000
-DATABASE_URL=<from Render PostgreSQL>
-JWT_SECRET=<generate 32+ char secret>
-FRONTEND_URL=https://your-frontend.onrender.com
-```
-
-#### Production Frontend (Render/Vercel)
-```env
-REACT_APP_API_URL=https://your-backend.onrender.com/api
-```
+ 
 
 ### Database Migration
 
