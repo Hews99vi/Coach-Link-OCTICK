@@ -2,9 +2,10 @@
 
 A comprehensive fullstack transportation request management platform with real-time updates, role-based access control, and professional UI/UX. Built with Node.js/Express backend, React frontend, and PostgreSQL/SQLite database.
 
-[![WCAG 2.1 AA](https://img.shields.io/badge/WCAG-2.1%20AA-green)](https://www.w3.org/WAI/WCAG21/quickref/)
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
-[![Production Ready](https://img.shields.io/badge/Production-Ready-brightgreen)](https://render.com)
+User's credentials:
+- **Coordinator**: `coordinator` / `password`
+- **Viewer**: `viewer` / `viewer123`
+- **Admin**: `admin` / `admin123`
 
 ## 🏗️ Architecture Overview
 
@@ -149,7 +150,7 @@ cd backend
 npm run init:db
 ```
 
-This creates the database and seeds it with default users:
+User's credentials:
 - **Coordinator**: `coordinator` / `password`
 - **Viewer**: `viewer` / `viewer123`
 - **Admin**: `admin` / `admin123`
@@ -257,7 +258,6 @@ Coach-Link-/
 
 **File Size Guidelines**:
 - ✅ Most files under 500 lines
-- ⚠️ `AdminPanel.js` (782 lines) - **needs refactoring** into smaller components
 - ✅ Clear separation of concerns
 - ✅ Logical folder structure
 
